@@ -1,0 +1,84 @@
+ <!-- **************************************************************************
+* Copyright (c) 2014 Henrik Lynggaard Hansen
+*
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+*
+* Contributors:
+*    Henrik Lynggaard Hansen - initial code
+*************************************************************************** --> 
+
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+         xmlns:i="jelly:fmt">
+	
+    <meta http-equiv="refresh" content="${from.refresh}" />
+	
+    <j:choose>
+        <j:when test="${empty(items)}">
+            No items
+        </j:when>
+        <j:otherwise>
+            <t:setIconSize/>
+            <h1>Next run of scheduled jobs</h1>
+            <table class="pane sortable bigtable" style="margin:0px; border: 0px">
+                <tr style="border-bottom: 1px solid #e5d8ed;" >
+                    <th class="pane-header" style="text-align:left; width:4em">Health</th>
+                    <th class="pane-header" style="text-align:left; width:4em">Job</th>                    
+                    <th class="pane-header" style="text-align:left; width:4em">Last Run</th>                        
+                    <th class="pane-header" style="text-align:left; width:4em">State</th>                    
+                    <th class="pane-header" style="text-align:left; width:4em">Next</th>
+                    <th class="pane-header" style="text-align:left">Schedule</th>
+                </tr>           
+                <j:forEach var="job" items="${it.getTimerTriggered()}">
+                    <tr>
+                        <t:ballColorTd it="${job.iconColor}"/>
+                        <td><a href="${job.url}">${job.jobName}</a></td>
+                        <j:choose>
+                        <j:when test="${job.lastRun != null}">
+                            <td><i:formatDate value="${job.lastRun}" type="both" dateStyle="medium" timeStyle="medium"/></td>
+                        </j:when>
+                        <j:otherwise>
+                            <td>-</td>
+                        </j:otherwise>
+                        </j:choose>
+                        <td>${job.state}</td>
+                        <td><i:formatDate value="${job.nextTime}" type="both" dateStyle="medium" timeStyle="medium"/></td>
+                        <td>${job.crontabSpec}</td>
+                    </tr>
+                </j:forEach>                
+             </table>
+
+            <h1>Next poll of SCM</h1>
+            <table class="pane sortable bigtable" style="margin:0px; border: 0px">
+                <tr style="border-bottom: 1px solid #e5d8ed;" >
+                    <th class="pane-header" style="text-align:left; width:4em">Health</th>
+                    <th class="pane-header" style="text-align:left; width:4em">Job</th>                    
+                    <th class="pane-header" style="text-align:left; width:4em">Last Run</th>                        
+                    <th class="pane-header" style="text-align:left; width:4em">State</th>                    
+                    <th class="pane-header" style="text-align:left; width:4em">Next</th>
+                    <th class="pane-header" style="text-align:left">Schedule</th>
+                </tr>              
+                <j:forEach var="job" items="${it.getScmTriggered()}">
+                    <tr>
+                        <t:ballColorTd it="${job.iconColor}"/>
+                        <td><a href="${job.url}">${job.jobName}</a></td>
+                        <j:choose>
+                        <j:when test="${job.lastRun != null}">
+                            <td><i:formatDate value="${job.lastRun}" type="both" dateStyle="medium" timeStyle="medium"/></td>
+                        </j:when>
+                        <j:otherwise>
+                            <td>-</td>
+                        </j:otherwise>
+                        </j:choose>
+                        <td>${job.state}</td>
+                        <td><i:formatDate value="${job.nextTime}" type="both" dateStyle="medium" timeStyle="medium"/></td>
+                        <td>${job.crontabSpec}</td>
+                    </tr>
+                </j:forEach>                
+             </table>
+        </j:otherwise>
+    </j:choose>
+</j:jelly>
